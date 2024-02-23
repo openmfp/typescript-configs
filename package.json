@@ -6,6 +6,9 @@
   "files": [
     "index.js"
   ],
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0"
+  },
   "peerDependencies": {
     "prettier": "^3.2.0"
   },
