@@ -1,0 +1,9 @@
+# Node, JS and tests
+*/coverage
+node_modules
+
+# IntelliJ IDE
+*.idea
+*.swp
+*.swo
+*.iml
