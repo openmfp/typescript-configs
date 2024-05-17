@@ -1,20 +1,19 @@
 {
-  "name": "@openmfp/typescript-configs",
-  "version": "0.5.0",
-  "description": "A shared configurations for typescript to be used across openmfp frontends",
-  "main": "",
+  "name": "@openmfp/eslint-config-typescript",
+  "version": "1.0.7",
+  "description": "Repository which contains ESLint Configuration for projects that use TypeScript",
+  "main": "index.js",
   "files": [
-    "config-prettier/index.js",
-    "eslint-config-typescript/index.js"
+    "index.js"
   ],
   "scripts": {
-    "test": "echo \"No test specified\" && exit 0"
   },
   "engines" : {
     "node" : ">=18.0.0",
     "npm" : ">=9.0.0"
   },
   "devDependencies": {
+    "@openmfp/config-prettier": "0.4.0",
     "@typescript-eslint/eslint-plugin": "7.9.0",
     "@typescript-eslint/parser": "7.9.0",
     "eslint": "8.57.0",
@@ -24,13 +23,13 @@
     "prettier": "3.2.5"
   },
   "peerDependencies": {
+    "@openmfp/config-prettier": ">=0.4.0",
     "@typescript-eslint/eslint-plugin": ">=5.39.0",
     "@typescript-eslint/parser": ">=5.39.0",
     "eslint": ">=8.24.0",
     "eslint-config-prettier": ">=8.5.0",
     "eslint-plugin-jest": ">=25.2.2",
     "eslint-plugin-prettier": ">=4.2.1",
-    "prettier": "^3.2.0"
-  },
-  "url": "https://github.com/openmfp/typescript-configs"
+    "prettier": ">=2.4.1"
+  }
 }

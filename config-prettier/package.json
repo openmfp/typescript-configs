@@ -1,0 +1,16 @@
+{
+  "name": "@openmfp/config-prettier",
+  "version": "0.4.0",
+  "description": "A shared configuration for prettier to be used across openmfp frontends",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "peerDependencies": {
+    "prettier": "^3.2.0"
+  },
+  "url": "https://github.com/openmfp/config-prettier"
+}

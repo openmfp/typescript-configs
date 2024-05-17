@@ -1,0 +1,14 @@
+name: config-prettier
+on:
+  push:
+    paths:
+      - 'config-prettier/**'
+      - '.github/workflows/config-prettier.yaml'
+
+jobs:
+  pipe:
+    concurrency:
+      group: ${{ github.ref }}
+      cancel-in-progress: false
+    uses: openmfp/gha/.github/workflows/pipeline-node-module.yml@feat/work-dir
+    secrets: inherit
