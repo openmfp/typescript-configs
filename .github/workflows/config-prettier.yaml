@@ -14,3 +14,4 @@ jobs:
     secrets: inherit
     with:
       workingDirectory: 'config-prettier'
+      mainBranchRef: 'refs/heads/general-config-repo'
