@@ -12,3 +12,5 @@ jobs:
       cancel-in-progress: false
     uses: openmfp/gha/.github/workflows/pipeline-node-module.yml@feat/work-dir
     secrets: inherit
+    with:
+      workingDirectory: 'eslint-config-typescript'
