@@ -1,6 +1,6 @@
 {
   "name": "@openmfp/eslint-config-typescript",
-  "version": "1.0.7",
+  "version": "0.6.0",
   "description": "Repository which contains ESLint Configuration for projects that use TypeScript",
   "main": "index.js",
   "files": [
@@ -9,9 +9,9 @@
   "scripts": {
     "test": "echo 'No test specified'"
   },
-  "engines" : {
-    "node" : ">=18.0.0",
-    "npm" : ">=9.0.0"
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   },
   "devDependencies": {
     "@openmfp/config-prettier": "0.4.0",
