@@ -7,7 +7,7 @@
     "index.js"
   ],
   "scripts": {
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo 'No test specified'"
   },
   "engines" : {
     "node" : ">=18.0.0",

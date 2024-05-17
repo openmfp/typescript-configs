@@ -7,7 +7,7 @@
     "index.js"
   ],
   "scripts": {
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo 'No test specified'"
   },
   "peerDependencies": {
     "prettier": "^3.2.0"
