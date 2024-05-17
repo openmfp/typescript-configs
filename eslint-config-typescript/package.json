@@ -1,0 +1,36 @@
+{
+  "name": "@openmfp/eslint-config-typescript",
+  "version": "1.0.7",
+  "description": "Repository which contains ESLint Configuration for projects that use TypeScript",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "engines" : {
+    "node" : ">=18.0.0",
+    "npm" : ">=9.0.0"
+  },
+  "devDependencies": {
+    "@openmfp/config-prettier": "0.4.0",
+    "@typescript-eslint/eslint-plugin": "7.9.0",
+    "@typescript-eslint/parser": "7.9.0",
+    "eslint": "8.57.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-jest": "28.5.0",
+    "eslint-plugin-prettier": "5.1.3",
+    "prettier": "3.2.5"
+  },
+  "peerDependencies": {
+    "@openmfp/config-prettier": ">=0.4.0",
+    "@typescript-eslint/eslint-plugin": ">=5.39.0",
+    "@typescript-eslint/parser": ">=5.39.0",
+    "eslint": ">=8.24.0",
+    "eslint-config-prettier": ">=8.5.0",
+    "eslint-plugin-jest": ">=25.2.2",
+    "eslint-plugin-prettier": ">=4.2.1",
+    "prettier": ">=2.4.1"
+  }
+}

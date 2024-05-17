@@ -1,0 +1,16 @@
+name: eslint-config-typescript
+on:
+  push:
+    paths:
+      - 'eslint-config-typescript/**'
+      - '.github/workflows/eslint-config-typescript.yaml'
+
+jobs:
+  pipe:
+    concurrency:
+      group: ${{ github.ref }}
+      cancel-in-progress: false
+    uses: openmfp/gha/.github/workflows/pipeline-node-module.yml@main
+    secrets: inherit
+    with:
+      workingDirectory: 'eslint-config-typescript'

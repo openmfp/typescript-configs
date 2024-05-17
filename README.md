@@ -1,3 +1,4 @@
-# config-prettier
+# About
 
-Common configuration for Prettier to be shared across openmfp UI's.
+This repository offers reusable TypeScript configuration to be used for services which are TypeScript-based (e.g. backend services building with NestJS, or plain TypeScript projects).
+
