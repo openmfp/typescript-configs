@@ -7,6 +7,7 @@
     "index.js"
   ],
   "scripts": {
+    "build": "echo 'No build required'",
     "test": "echo 'No test specified'"
   },
   "engines": {
