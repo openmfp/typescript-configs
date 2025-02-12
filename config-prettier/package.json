@@ -1,6 +1,6 @@
 {
   "name": "@openmfp/config-prettier",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "A shared configuration for prettier to be used across openmfp frontends",
   "main": "index.js",
   "files": [
@@ -11,7 +11,9 @@
     "test": "echo 'No test specified'"
   },
   "peerDependencies": {
-    "prettier": "^3.2.0"
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "prettier": "^3.5.0"
   },
-  "url": "https://github.com/openmfp/config-prettier"
+  "url": "https://github.com/openmfp/config-prettier",
+  "type": "module"
 }
