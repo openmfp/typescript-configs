@@ -10,8 +10,7 @@ const config = {
   plugins: ["@trivago/prettier-plugin-sort-imports"],
   // for @trivago/prettier-plugin-sort-imports
   importOrderParserPlugins: ["typescript", "decorators"],
-  "importOrderSortSpecifiers": true
+  importOrderSortSpecifiers: true,
 };
-
 
 export default config;
