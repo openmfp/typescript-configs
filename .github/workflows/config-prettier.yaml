@@ -14,3 +14,4 @@ jobs:
     secrets: inherit
     with:
       workingDirectory: 'config-prettier'
+      release_branch: 'fix/node_release_version'
