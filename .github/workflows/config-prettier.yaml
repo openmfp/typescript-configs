@@ -2,8 +2,8 @@ name: config-prettier
 on:
   push:
     paths:
-      - 'config-prettier/**'
-      - '.github/workflows/config-prettier.yaml'
+      - "config-prettier/**"
+      - ".github/workflows/config-prettier.yaml"
 
 jobs:
   pipe:
@@ -13,4 +13,4 @@ jobs:
     uses: openmfp/gha/.github/workflows/pipeline-node-module.yml@main
     secrets: inherit
     with:
-      workingDirectory: 'config-prettier'
+      workingDirectory: "config-prettier"
