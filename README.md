@@ -1,4 +1,4 @@
-# OpenMFP Portal
+# OpenMFP Typescript Configurations
 
 ![Build Status](https://github.com/openmfp/typescript-configs/actions/workflows/pipeline.yaml/badge.svg)
 [![REUSE status](
