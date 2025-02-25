@@ -22,8 +22,15 @@ Copyright 2025 SAP SE or an SAP affiliate company and openMFP contributors. Plea
 
 ## How to use
 
-I order to use the `@openmfp/config-prettier` and/or `@openmfp/eslint-config-typescript` packages
-you need to add the dependencies to the `package.json` file:
+In order to use the `@openmfp/config-prettier` package in your project:
+
+* Execute npm install command
+
+  ```sh
+  npm install --dev-save @openmfp/config-prettier@latest
+  ```
+
+* Add prettier configuration into the `package.json` file:
 
 ```json
 {
@@ -31,18 +38,19 @@ you need to add the dependencies to the `package.json` file:
   "version": "0.0.1",
   "prettier": "@openmfp/config-prettier",
   ...
-  "devDependencies": {
-    ...
-    "@openmfp/config-prettier": "^0.5.0",
-    "@openmfp/eslint-config-typescript": "^0.19.0"
-  },
-  ...
 }
 
 ```
 
-Additionally, for `@openmfp/eslint-config-typescript` add into the corresponding  `.eslintrc.json` file 
-below setup alongside custom configuration:
+In order to use the `@openmfp/eslint-config-typescript` packages in your project:
+
+* Execute npm install command
+
+  ```sh
+  npm install --dev-save @openmfp/eslint-config-typescript@latest
+  ```
+
+* Add into the file `.eslintrc.json` below setup, alongside your custom configuration:
 
 ```json
 {
