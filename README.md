@@ -20,3 +20,41 @@ Please refer to the [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) file in this reposi
 
 Copyright 2025 SAP SE or an SAP affiliate company and openMFP contributors. Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/openmfp/portal).
 
+## How to use
+
+In order to use the `@openmfp/config-prettier` package in your project:
+
+* Execute npm install command
+
+  ```sh
+  npm install --dev-save @openmfp/config-prettier@latest
+  ```
+
+* Add prettier configuration into the `package.json` file:
+
+```json
+{
+  "name": "my-project",
+  "version": "0.0.1",
+  "prettier": "@openmfp/config-prettier",
+  ...
+}
+
+```
+
+In order to use the `@openmfp/eslint-config-typescript` packages in your project:
+
+* Execute npm install command
+
+  ```sh
+  npm install --dev-save @openmfp/eslint-config-typescript@latest
+  ```
+
+* Add into the file `.eslintrc.json` below setup, alongside your custom configuration:
+
+```json
+{
+	"extends": "@openmfp/eslint-config-typescript"
+}
+```
+
