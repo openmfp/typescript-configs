@@ -23,3 +23,4 @@ jobs:
     secrets: inherit
     with:
       workingDirectory: "config-prettier"
+      prefix: "config-prettier"
