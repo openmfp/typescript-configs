@@ -1,6 +1,6 @@
 {
   "name": "@openmfp/config-prettier",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "A shared configuration for prettier to be used across openmfp frontends",
   "main": "index.js",
   "files": [
