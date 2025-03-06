@@ -26,6 +26,8 @@ export default pluginTs.config(
           ignoreRestSiblings: true,
         },
       ],
+      // TODO remove when we extend strict-type-checked since it's included there
+      '@typescript-eslint/no-confusing-void-expression': 'error',
     },
   },
   {
