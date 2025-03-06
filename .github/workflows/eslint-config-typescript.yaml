@@ -1,9 +1,18 @@
 name: eslint-config-typescript
 on:
   push:
+    branches:
+      - main
     paths:
       - "eslint-config-typescript/**"
       - ".github/workflows/eslint-config-typescript.yaml"
+  pull_request:
+    paths:
+      - "config-prettier/**"
+      - ".github/workflows/config-prettier.yaml"
+    types:
+      - opened
+      - synchronize
 
 jobs:
   pipe:
