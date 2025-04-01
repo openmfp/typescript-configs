@@ -1,0 +1,24 @@
+{
+  "name": "@openmfp/gha-cache",
+  "version": "0.1.0",
+  "description": "GitHunt Action cache scripts",
+  "files": [
+    "angular.js"
+  ],
+  "scripts": {
+    "build": "npx esbuild angular.ts --bundle --minify --platform=node --target=esNext --outfile=angular.js",
+    "test": "echo 'no test'"
+  },
+  "peerDependencies": {
+    "typescript": "^5.8.2"
+  },
+  "url": "https://github.com/openmfp/typescript-configs",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/node": "^22.13.16",
+    "esbuild": "^0.25.2"
+  },
+  "dependencies": {
+    "@actions/cache": "^4.0.3"
+  }
+}
