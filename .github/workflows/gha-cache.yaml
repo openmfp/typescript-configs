@@ -1,15 +1,15 @@
-name: eslint-config-typescript
+name: gha-cache
 on:
   push:
     branches:
       - main
     paths:
-      - "eslint-config-typescript/**"
-      - ".github/workflows/eslint-config-typescript.yaml"
+      - "gha-cache/**"
+      - ".github/workflows/gha-cache.yaml"
   pull_request:
     paths:
-      - "eslint-config-typescript/**"
-      - ".github/workflows/eslint-config-typescript.yaml"
+      - "gha-cache/**"
+      - ".github/workflows/gha-cache.yaml"
     types:
       - opened
       - synchronize
@@ -22,5 +22,5 @@ jobs:
     uses: openmfp/gha/.github/workflows/pipeline-node-module.yml@main
     secrets: inherit
     with:
-      workingDirectory: "eslint-config-typescript"
-      prefix: "eslint-config-typescript/"
+      workingDirectory: "gha-cache"
+      prefix: "gha-cache/"
