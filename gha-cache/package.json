@@ -6,7 +6,8 @@
     "angular.js"
   ],
   "scripts": {
-    "build": "npx esbuild angular.ts --bundle --minify --platform=node --target=esNext --outfile=angular.js"
+    "build": "npx esbuild angular.ts --bundle --minify --platform=node --target=esNext --outfile=angular.js",
+    "test": "echo 'no test'"
   },
   "peerDependencies": {
     "typescript": "^5.8.2"
