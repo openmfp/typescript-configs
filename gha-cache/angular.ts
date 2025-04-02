@@ -81,6 +81,11 @@ async function restoreOrSaveCache(
   let hashes = '';
 
   for (const [key, project] of projects) {
+    if (!productionCaches[key]) {
+      // if the project is not in the cache map, skip it
+      continue;
+    }
+
     const prodPattern = getProjectFiles(project);
     const projectHash = getFilesHash(prodPattern);
     const hash = createHash('sha256')
