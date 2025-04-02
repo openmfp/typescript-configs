@@ -23,4 +23,5 @@ jobs:
     secrets: inherit
     with:
       workingDirectory: "gha-cache"
+      publishFromDist: true
       prefix: "gha-cache/"
