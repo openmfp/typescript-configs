@@ -24,4 +24,6 @@ jobs:
     with:
       workingDirectory: "gha-cache"
       publishFromDist: true
+      artifactPath: "gha-cache/dist"
+      workingDirectoryDist: "gha-cache/dist"
       prefix: "gha-cache/"
