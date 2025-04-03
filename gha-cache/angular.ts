@@ -24,7 +24,7 @@ const globalProdPatterns = [
 
 const globalTestPatterns = ['jest.config.ts'];
 
-const testCaches = ['TEST-frontend.xml'];
+const testCaches = ['coverage/lcov.info'];
 
 async function main() {
   const cacheConfig: CacheConfig = await import(process.cwd() + '/cache.config.js');
