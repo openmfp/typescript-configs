@@ -100,7 +100,7 @@ async function getArtifacts(): Promise<Artifact[]> {
       {
         headers: {
           Accept: 'application/vnd.github+json',
-          Authorization: `Bearer ${process.env.PIPER_VAULTCREDENTIAL_ACCESS_TOKEN}`,
+          Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
           'X-GitHub-Api-Version': '2022-11-28',
         },
       },
@@ -197,7 +197,7 @@ async function downloadCache(
   }
 
   execSync(
-      `curl -L "${artifact.archive_download_url}" -H "Authorization: Bearer ${process.env.PIPER_VAULTCREDENTIAL_ACCESS_TOKEN}" --output ${cachePath}`,
+      `curl -L "${artifact.archive_download_url}" -H "Authorization: Bearer ${process.env.ACCESS_TOKEN}" --output ${cachePath}`,
   );
 
   if (cacheItem.isDirectory) {
