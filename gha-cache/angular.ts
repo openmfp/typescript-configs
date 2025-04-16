@@ -185,26 +185,19 @@ async function downloadCache(
     artifacts: Artifact[],
     cacheItem: CacheItem,
     key: string,
-    unzip = false,
 ) {
   const artifact = artifacts.find((a) => a.name === name);
   if (!artifact) {
     return false;
   }
-  let cachePath = cacheItem.path;
-
-  if (cacheItem.isDirectory || unzip) {
-    cachePath = `temp${Math.random()}.zip`;
-  }
+  const cachePath = `temp${Math.random()}.zip`;
 
   execSync(
       `curl -L "${artifact.archive_download_url}" -H "Authorization: Bearer ${process.env.ACCESS_TOKEN}" --output ${cachePath}`,
   );
 
-  if (cacheItem.isDirectory || unzip) {
-    execSync(`unzip ${cachePath}`);
-    unlinkSync(cachePath);
-  }
+  execSync(`unzip ${cachePath}`);
+  unlinkSync(cachePath);
 
   if (cacheItem.isDirectory) {
     execSync(`tar -xf ${key}.tar`);
@@ -258,7 +251,6 @@ async function restoreTest(projects: any[], config: Config) {
         config.artifacts,
         testCachePath,
         'test_cov',
-        true
     );
   }
 
