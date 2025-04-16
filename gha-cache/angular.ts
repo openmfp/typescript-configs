@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from '@actions/artifact';
-import { mkdirSync, readFileSync, unlinkSync } from 'fs';
+import { readFileSync, unlinkSync } from 'fs';
 import { execSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 
@@ -185,6 +185,7 @@ async function downloadCache(
     artifacts: Artifact[],
     cacheItem: CacheItem,
     key: string,
+    unzip = false,
 ) {
   const artifact = artifacts.find((a) => a.name === name);
   if (!artifact) {
@@ -192,7 +193,7 @@ async function downloadCache(
   }
   let cachePath = cacheItem.path;
 
-  if (cacheItem.isDirectory) {
+  if (cacheItem.isDirectory || unzip) {
     cachePath = `temp${Math.random()}.zip`;
   }
 
@@ -200,10 +201,13 @@ async function downloadCache(
       `curl -L "${artifact.archive_download_url}" -H "Authorization: Bearer ${process.env.ACCESS_TOKEN}" --output ${cachePath}`,
   );
 
-  if (cacheItem.isDirectory) {
+  if (cacheItem.isDirectory || unzip) {
     execSync(`unzip ${cachePath}`);
-    execSync(`tar -xf ${key}.tar`);
     unlinkSync(cachePath);
+  }
+
+  if (cacheItem.isDirectory) {
+    execSync(`tar -xf ${key}.tar`);
   }
 
   return true;
@@ -249,12 +253,12 @@ async function restoreTest(projects: any[], config: Config) {
   const cacheKey = 'test_cov-' + hash;
 
   if (config.cached) {
-    mkdirSync('coverage');
     testCache = await downloadCache(
         cacheKey,
         config.artifacts,
         testCachePath,
         'test_cov',
+        true
     );
   }
 
