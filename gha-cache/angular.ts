@@ -1,13 +1,33 @@
-import { restoreCache, saveCache } from '@actions/cache';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { create } from '@actions/artifact';
+import { mkdirSync, readFileSync, unlinkSync } from 'fs';
 import { execSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import {readFileSync} from "fs";
+
+interface CacheItem {
+  path: string;
+  isDirectory?: boolean;
+}
 
 interface CacheConfig {
-  cacheMap: {
-    [key: string]: string[];
-  };
+  cacheMap: Record<string, CacheItem>;
 }
+
+interface Artifact {
+  name: string;
+  archive_download_url: string;
+}
+
+interface Config {
+  artifacts: Artifact[];
+  cached: boolean;
+  hashes: string;
+}
+
+const artifact = create();
+
+const server = process.env.GITHUB_SERVER_URL;
+const repo = process.env.GITHUB_REPOSITORY;
 
 // in the images all directories are readonly, so the runner must work inside the repo
 const RUNNER_TEMP = process.cwd() + '/.runner_temp';
@@ -24,28 +44,45 @@ const globalProdPatterns = [
 
 const globalTestPatterns = ['jest.config.ts'];
 
-const testCaches = ['coverage/lcov.info'];
+const testCachePath: CacheItem = {
+  path: 'coverage/lcov.info',
+};
 
 async function main() {
   const cacheConfig: CacheConfig = await import(process.cwd() + '/cache.config.js');
   const productionCaches = cacheConfig.cacheMap;
   normalizePackageLock();
 
-  const libraries = Object.entries(angular.projects).filter((project: [string, any]) => {
-    return project[1].projectType === 'library';
-  });
-  const applications = Object.entries(angular.projects).filter((project: [string, any]) => {
-    return project[1].projectType === 'application';
-  });
+  const artifacts = await getArtifacts();
+
+  const libraries = Object.entries(angular.projects).filter(
+    (project: [string, any]) => {
+      return project[1].projectType === 'library';
+    },
+  );
+  const applications = Object.entries(angular.projects).filter(
+      (project: [string, any]) => {
+        return project[1].projectType === 'application';
+      },
+  );
 
   const globalHash = getFilesHash(globalProdPatterns);
 
-  const libsRestored = await restoreOrSaveCache(libraries, {
-    hashes: globalHash,
-    cached: true,
-  },productionCaches);
+  const libsRestored = await restoreOrSaveCache(
+      libraries,
+      {
+        hashes: globalHash,
+        cached: true,
+        artifacts,
+      },
+      productionCaches,
+  );
   // only attempt to restore applications if all libraries were restored
-  const appsRestored = await restoreOrSaveCache(applications, libsRestored, productionCaches);
+  const appsRestored = await restoreOrSaveCache(
+      applications,
+      libsRestored,
+      productionCaches,
+  );
   // only attempt to restore test coverage if all applications were restored
   await restoreTest(Object.values(angular.projects), appsRestored);
 }
@@ -55,6 +92,21 @@ function normalizePackageLock() {
     `npx node-jq --arg new_version "0.0.0" '.version = $new_version | .packages."".version = $new_version' package-lock.json > tmp.json && mv tmp.json package-lock.json`,
   );
   execSync(`git add package-lock.json`);
+}
+
+async function getArtifacts(): Promise<Artifact[]> {
+  const apiResponse = await fetch(
+      `${server}/api/v3/repos/${repo}/actions/artifacts`,
+      {
+        headers: {
+          Accept: 'application/vnd.github+json',
+          Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      },
+  );
+  const responseJson = await apiResponse.json();
+  return responseJson.artifacts;
 }
 
 function getFilesHash(patterns: string[]) {
@@ -72,11 +124,10 @@ function getFilesHash(patterns: string[]) {
 }
 
 async function restoreOrSaveCache(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   projects: any[],
-  config: { cached: boolean; hashes: string },
+  config: Config,
   productionCaches: CacheConfig['cacheMap'],
-): Promise<{ cached: boolean; hashes: string }> {
+): Promise<Config> {
   let cached = true;
   let hashes = '';
 
@@ -92,24 +143,72 @@ async function restoreOrSaveCache(
       .update(projectHash + config.hashes)
       .digest('hex');
     hashes += hash;
-    const cacheKey = key + '/' + hash;
-    let prodCache: undefined | string = undefined;
+    const cacheKey = key + '-' + hash;
+    let prodCache = false;
 
     if (config.cached) {
-      prodCache = await restoreCache(productionCaches[key], cacheKey);
+      prodCache = await downloadCache(
+          cacheKey,
+          config.artifacts,
+          productionCaches[key],
+          key,
+      );
     }
 
     if (!prodCache) {
       cached = false;
       execSync(`npm run build:${key}`);
-      await saveCache(productionCaches[key], cacheKey);
+      const cachePath = getCachePath(productionCaches[key], key);
+
+      await artifact.uploadArtifact(cacheKey, [cachePath], process.cwd());
     }
   }
 
-  return { cached, hashes: hashes || config.hashes };
+  return {
+    cached,
+    hashes: hashes || config.hashes,
+    artifacts: config.artifacts,
+  };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getCachePath(cacheItem: CacheItem, key: string): string {
+  if (!cacheItem.isDirectory) {
+    return cacheItem.path;
+  }
+
+  execSync(`tar -cf ${key}.tar ${cacheItem.path}`);
+  return `${key}.tar`;
+}
+
+async function downloadCache(
+    name: string,
+    artifacts: Artifact[],
+    cacheItem: CacheItem,
+    key: string,
+) {
+  const artifact = artifacts.find((a) => a.name === name);
+  if (!artifact) {
+    return false;
+  }
+  let cachePath = cacheItem.path;
+
+  if (cacheItem.isDirectory) {
+    cachePath = `temp${Math.random()}.zip`;
+  }
+
+  execSync(
+      `curl -L "${artifact.archive_download_url}" -H "Authorization: Bearer ${process.env.ACCESS_TOKEN}" --output ${cachePath}`,
+  );
+
+  if (cacheItem.isDirectory) {
+    execSync(`unzip ${cachePath}`);
+    execSync(`tar -xf ${key}.tar`);
+    unlinkSync(cachePath);
+  }
+
+  return true;
+}
+
 function getProjectFiles(project: any): string[] {
   const srcFiles = [
     `${project.sourceRoot}/**/*.ts`,
@@ -121,7 +220,6 @@ function getProjectFiles(project: any): string[] {
   return [getTsConfig(project), ...srcFiles];
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getTsConfig(project: any): string {
   if (project.projectType === 'application') {
     return project.architect.build.options.tsConfig;
@@ -130,11 +228,7 @@ function getTsConfig(project: any): string {
   }
 }
 
-async function restoreTest(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  projects: any[],
-  config: { cached: boolean; hashes: string },
-) {
+async function restoreTest(projects: any[], config: Config) {
   const testPattern = [...globalTestPatterns];
   for (const project of projects) {
     const root = project.root || '.';
@@ -151,16 +245,26 @@ async function restoreTest(
   const hash = createHash('sha256')
     .update(testHash + config.hashes)
     .digest('hex');
-  let testCache: undefined | string = undefined;
-  const cacheKey = 'test-cov/' + hash;
+  let testCache = false;
+  const cacheKey = 'test_cov-' + hash;
 
   if (config.cached) {
-    testCache = await restoreCache(testCaches, cacheKey);
+    mkdirSync('coverage');
+    testCache = await downloadCache(
+        cacheKey,
+        config.artifacts,
+        testCachePath,
+        'test_cov',
+    );
   }
 
   if (!testCache) {
     execSync(`npm run test:cov`);
-    await saveCache(testCaches, cacheKey);
+    await artifact.uploadArtifact(
+        cacheKey,
+        [testCachePath.path],
+        process.cwd(),
+    );
   }
 }
 
