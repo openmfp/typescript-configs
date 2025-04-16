@@ -44,9 +44,11 @@ const globalProdPatterns = [
 
 const globalTestPatterns = ['jest.config.ts'];
 
-const testCachePath: CacheItem = {
-  path: 'coverage/lcov.info',
-};
+const testCachePaths = [
+  'coverage/lcov.info',
+  'TEST-frontend.xml'
+] as const;
+const testCacheName = 'test_cov.tar'
 
 async function main() {
   const cacheConfig: CacheConfig = await import(process.cwd() + '/cache.config.js');
@@ -249,16 +251,18 @@ async function restoreTest(projects: any[], config: Config) {
     testCache = await downloadCache(
         cacheKey,
         config.artifacts,
-        testCachePath,
+        {path: testCacheName},
         'test_cov',
     );
+
+    execSync(`tar -xf ${testCacheName}`);
   }
 
   if (!testCache) {
-    execSync(`npm run test:cov`);
+    execSync(`npm run test:cov && tar -cf ${testCacheName} ${testCachePaths.join(' ')}`);
     await artifact.uploadArtifact(
         cacheKey,
-        [testCachePath.path],
+        [testCacheName],
         process.cwd(),
     );
   }
