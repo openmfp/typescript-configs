@@ -19,7 +19,6 @@ interface Artifact {
 }
 
 interface Config {
-  artifacts: Artifact[];
   cached: boolean;
   hashes: string;
 }
@@ -44,23 +43,20 @@ const globalProdPatterns = [
 
 const globalTestPatterns = ['jest.config.ts'];
 
-const testCachePaths = [
-  'coverage/lcov.info',
-  'TEST-frontend.xml'
-] as const;
-const testCacheName = 'test_cov.tar'
+const testCachePaths = ['coverage/lcov.info', 'TEST-frontend.xml'] as const;
+const testCacheName = 'test_cov.tar';
 
 async function main() {
-  const cacheConfig: CacheConfig = await import(process.cwd() + '/cache.config.js');
+  const cacheConfig: CacheConfig = await import(
+  process.cwd() + '/cache.config.js'
+      );
   const productionCaches = cacheConfig.cacheMap;
   normalizePackageLock();
 
-  const artifacts = await getArtifacts();
-
   const libraries = Object.entries(angular.projects).filter(
-    (project: [string, any]) => {
-      return project[1].projectType === 'library';
-    },
+      (project: [string, any]) => {
+        return project[1].projectType === 'library';
+      },
   );
   const applications = Object.entries(angular.projects).filter(
       (project: [string, any]) => {
@@ -75,7 +71,6 @@ async function main() {
       {
         hashes: globalHash,
         cached: true,
-        artifacts,
       },
       productionCaches,
   );
@@ -91,34 +86,19 @@ async function main() {
 
 function normalizePackageLock() {
   execSync(
-    `npx node-jq --arg new_version "0.0.0" '.version = $new_version | .packages."".version = $new_version' package-lock.json > tmp.json && mv tmp.json package-lock.json`,
+      `npx node-jq --arg new_version "0.0.0" '.version = $new_version | .packages."".version = $new_version' package-lock.json > tmp.json && mv tmp.json package-lock.json`,
   );
   execSync(`git add package-lock.json`);
-}
-
-async function getArtifacts(): Promise<Artifact[]> {
-  const apiResponse = await fetch(
-      `${server}/api/v3/repos/${repo}/actions/artifacts`,
-      {
-        headers: {
-          Accept: 'application/vnd.github+json',
-          Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-      },
-  );
-  const responseJson = await apiResponse.json();
-  return responseJson.artifacts;
 }
 
 function getFilesHash(patterns: string[]) {
   let hashes = '';
   for (const pattern of patterns) {
     const hash = execSync(
-      `git ls-files -s ${pattern} |  awk '{print $2}' | tr -d '\\n'`,
-      {
-        encoding: 'utf8',
-      },
+        `git ls-files -s ${pattern} |  awk '{print $2}' | tr -d '\\n'`,
+        {
+          encoding: 'utf8',
+        },
     ).replace(/\s/, '');
     hashes += hash;
   }
@@ -126,9 +106,9 @@ function getFilesHash(patterns: string[]) {
 }
 
 async function restoreOrSaveCache(
-  projects: any[],
-  config: Config,
-  productionCaches: CacheConfig['cacheMap'],
+    projects: any[],
+    config: Config,
+    productionCaches: CacheConfig['cacheMap'],
 ): Promise<Config> {
   let cached = true;
   let hashes = '';
@@ -142,19 +122,14 @@ async function restoreOrSaveCache(
     const prodPattern = getProjectFiles(project);
     const projectHash = getFilesHash(prodPattern);
     const hash = createHash('sha256')
-      .update(projectHash + config.hashes)
-      .digest('hex');
+        .update(projectHash + config.hashes)
+        .digest('hex');
     hashes += hash;
     const cacheKey = key + '-' + hash;
     let prodCache = false;
 
     if (config.cached) {
-      prodCache = await downloadCache(
-          cacheKey,
-          config.artifacts,
-          productionCaches[key],
-          key,
-      );
+      prodCache = await downloadCache(cacheKey, productionCaches[key], key);
     }
 
     if (!prodCache) {
@@ -169,7 +144,6 @@ async function restoreOrSaveCache(
   return {
     cached,
     hashes: hashes || config.hashes,
-    artifacts: config.artifacts,
   };
 }
 
@@ -182,13 +156,8 @@ function getCachePath(cacheItem: CacheItem, key: string): string {
   return `${key}.tar`;
 }
 
-async function downloadCache(
-    name: string,
-    artifacts: Artifact[],
-    cacheItem: CacheItem,
-    key: string,
-) {
-  const artifact = artifacts.find((a) => a.name === name);
+async function downloadCache(name: string, cacheItem: CacheItem, key: string) {
+  const artifact = await getArtifact(name);
   if (!artifact) {
     return false;
   }
@@ -206,6 +175,21 @@ async function downloadCache(
   }
 
   return true;
+}
+
+async function getArtifact(name: string): Promise<Artifact | undefined> {
+  const apiResponse = await fetch(
+      `${server}/api/v3/repos/${repo}/actions/artifacts?name=${name}`,
+      {
+        headers: {
+          Accept: 'application/vnd.github+json',
+          Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      },
+  );
+  const responseJson = await apiResponse.json();
+  return responseJson.artifacts[0];
 }
 
 function getProjectFiles(project: any): string[] {
@@ -232,39 +216,36 @@ async function restoreTest(projects: any[], config: Config) {
   for (const project of projects) {
     const root = project.root || '.';
     testPattern.push(
-      ...[
-        project.sourceRoot + '/**/*.spec.ts',
-        root + '/tsconfig.spec.json',
-        root + '/test-setup.ts',
-        root + '/jest.config.ts',
-      ],
+        ...[
+          project.sourceRoot + '/**/*.spec.ts',
+          root + '/tsconfig.spec.json',
+          root + '/test-setup.ts',
+          root + '/jest.config.ts',
+        ],
     );
   }
   const testHash = getFilesHash(testPattern);
   const hash = createHash('sha256')
-    .update(testHash + config.hashes)
-    .digest('hex');
+      .update(testHash + config.hashes)
+      .digest('hex');
   let testCache = false;
   const cacheKey = 'test_cov-' + hash;
 
   if (config.cached) {
     testCache = await downloadCache(
         cacheKey,
-        config.artifacts,
-        {path: testCacheName},
+        { path: testCacheName },
         'test_cov',
     );
-
-    execSync(`tar -xf ${testCacheName}`);
   }
 
-  if (!testCache) {
-    execSync(`npm run test:cov && tar -cf ${testCacheName} ${testCachePaths.join(' ')}`);
-    await artifact.uploadArtifact(
-        cacheKey,
-        [testCacheName],
-        process.cwd(),
+  if (testCache) {
+    execSync(`tar -xf ${testCacheName}`);
+  } else {
+    execSync(
+        `npm run test:cov && tar -cf ${testCacheName} ${testCachePaths.join(' ')}`,
     );
+    await artifact.uploadArtifact(cacheKey, [testCacheName], process.cwd());
   }
 }
 
