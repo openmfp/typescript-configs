@@ -1,6 +1,6 @@
 {
   "name": "@openmfp/gha-cache",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "GitHunt Action cache scripts",
   "files": [
     "angular.js"
