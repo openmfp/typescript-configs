@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from '@actions/artifact';
 import { readFileSync, unlinkSync } from 'fs';
-import { execSync } from 'node:child_process';
+import { execSync, spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 
 interface CacheItem {
@@ -134,7 +134,7 @@ async function restoreOrSaveCache(
 
     if (!prodCache) {
       cached = false;
-      execSync(`npm run build:${key}`);
+      spawn(`npm run build:${key}`);
       const cachePath = getCachePath(productionCaches[key], key);
 
       await artifact.uploadArtifact(cacheKey, [cachePath], process.cwd());
@@ -242,7 +242,7 @@ async function restoreTest(projects: any[], config: Config) {
   if (testCache) {
     execSync(`tar -xf ${testCacheName}`);
   } else {
-    execSync(
+    spawn(
         `npm run test:cov && tar -cf ${testCacheName} ${testCachePaths.join(' ')}`,
     );
     await artifact.uploadArtifact(cacheKey, [testCacheName], process.cwd());
