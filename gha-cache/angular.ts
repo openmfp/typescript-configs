@@ -94,12 +94,19 @@ function normalizePackageLock() {
 function getFilesHash(patterns: string[]) {
   let hashes = '';
   for (const pattern of patterns) {
-    const hash = execSync(
-        `git ls-files -s ${pattern} |  awk '{print $2}' | tr -d '\\n'`,
+    const lsFiles = spawnSync(
+        `git`,
+        ['ls-files','-s', pattern],
         {
           encoding: 'utf8',
         },
-    ).replace(/\s/, '');
+    ).stdout;
+
+    const hash = lsFiles
+        .split('\n')
+        .map(line => line.split(/\s+/)[1] || '')
+        .join('')
+        .replace(/\n/g, '');
     hashes += hash;
   }
   return createHash('sha256').update(hashes).digest('hex');
