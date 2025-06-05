@@ -141,7 +141,7 @@ async function restoreOrSaveCache(
 
     if (!prodCache) {
       cached = false;
-      spawnSync('npm', ['run', `build:${key}`]);
+      runNpmScript(`build:${key}`);
       const cachePath = getCachePath(productionCaches[key], key);
 
       await artifact.uploadArtifact(cacheKey, [cachePath], process.cwd());
@@ -249,9 +249,16 @@ async function restoreTest(projects: any[], config: Config) {
   if (testCache) {
     execSync(`tar -xf ${testCacheName}`);
   } else {
-    spawnSync('npm', ['run', 'test:cov']);
+    runNpmScript('test:cov');
     execSync(`tar -cf ${testCacheName} ${testCachePaths.join(' ')}`);
     await artifact.uploadArtifact(cacheKey, [testCacheName], process.cwd());
+  }
+}
+
+function runNpmScript(script: string) {
+  const result = spawnSync('npm', ['run', script], {encoding: 'utf8'});
+  if (result.status) {
+    throw new Error(result.stderr);
   }
 }
 
