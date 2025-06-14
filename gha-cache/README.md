@@ -3,7 +3,7 @@ this project is to enable caching of GitHub actions build artifacts and test cov
 
 for now this only works for Angular projects, but it can be extended to support other technologies
 
-## usage
+## Usage
 1. create a `cache.config.js` file in your project with the following content:
 ```javascript
 export const cacheMap = {
