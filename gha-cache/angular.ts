@@ -201,11 +201,11 @@ async function getArtifact(name: string): Promise<Artifact | undefined> {
 
 function getProjectFiles(project: any): string[] {
   const srcFiles = [
-    `${project.sourceRoot}/**/*.ts`,
-    `${project.sourceRoot}/**/*.html`,
-    `${project.sourceRoot}/**/*.css`,
-    `${project.sourceRoot}/**/*.scss`,
-    `${project.sourceRoot}/assets/**/*`,
+    `${project.sourceRoot}/*.ts`,
+    `${project.sourceRoot}/*.html`,
+    `${project.sourceRoot}/*.css`,
+    `${project.sourceRoot}/*.scss`,
+    `${project.sourceRoot}/assets/*`,
   ];
   return [getTsConfig(project), ...srcFiles];
 }
@@ -224,7 +224,7 @@ async function restoreTest(projects: any[], config: Config) {
     const root = project.root || '.';
     testPattern.push(
         ...[
-          project.sourceRoot + '/**/*.spec.ts',
+          project.sourceRoot + '/*.spec.ts',
           root + '/tsconfig.spec.json',
           root + '/test-setup.ts',
           root + '/jest.config.ts',
