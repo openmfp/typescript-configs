@@ -48,37 +48,37 @@ const testCacheName = 'test_cov.tar';
 
 async function main() {
   const cacheConfig: CacheConfig = await import(
-  process.cwd() + '/cache.config.js'
-      );
+    process.cwd() + '/cache.config.js'
+  );
   const productionCaches = cacheConfig.cacheMap;
   normalizePackageLock();
 
   const libraries = Object.entries(angular.projects).filter(
-      (project: [string, any]) => {
-        return project[1].projectType === 'library';
-      },
+    (project: [string, any]) => {
+      return project[1].projectType === 'library';
+    },
   );
   const applications = Object.entries(angular.projects).filter(
-      (project: [string, any]) => {
-        return project[1].projectType === 'application';
-      },
+    (project: [string, any]) => {
+      return project[1].projectType === 'application';
+    },
   );
 
   const globalHash = getFilesHash(globalProdPatterns);
 
   const libsRestored = await restoreOrSaveCache(
-      libraries,
-      {
-        hashes: globalHash,
-        cached: true,
-      },
-      productionCaches,
+    libraries,
+    {
+      hashes: globalHash,
+      cached: true,
+    },
+    productionCaches,
   );
   // only attempt to restore applications if all libraries were restored
   const appsRestored = await restoreOrSaveCache(
-      applications,
-      libsRestored,
-      productionCaches,
+    applications,
+    libsRestored,
+    productionCaches,
   );
   // only attempt to restore test coverage if all applications were restored
   await restoreTest(Object.values(angular.projects), appsRestored);
@@ -86,7 +86,7 @@ async function main() {
 
 function normalizePackageLock() {
   execSync(
-      `npx node-jq --arg new_version "0.0.0" '.version = $new_version | .packages."".version = $new_version' package-lock.json > tmp.json && mv tmp.json package-lock.json`,
+    `npx node-jq --arg new_version "0.0.0" '.version = $new_version | .packages."".version = $new_version' package-lock.json > tmp.json && mv tmp.json package-lock.json`,
   );
   execSync(`git add package-lock.json`);
 }
@@ -94,28 +94,24 @@ function normalizePackageLock() {
 function getFilesHash(patterns: string[]) {
   let hashes = '';
   for (const pattern of patterns) {
-    const lsFiles = spawnSync(
-        `git`,
-        ['ls-files','-s', pattern],
-        {
-          encoding: 'utf8',
-        },
-    ).stdout;
+    const lsFiles = spawnSync(`git`, ['ls-files', '-s', pattern], {
+      encoding: 'utf8',
+    }).stdout;
 
     const hash = lsFiles
-        .split('\n')
-        .map(line => line.split(/\s+/)[1] || '')
-        .join('')
-        .replace(/\n/g, '');
+      .split('\n')
+      .map((line) => line.split(/\s+/)[1] || '')
+      .join('')
+      .replace(/\n/g, '');
     hashes += hash;
   }
   return createHash('sha256').update(hashes).digest('hex');
 }
 
 async function restoreOrSaveCache(
-    projects: any[],
-    config: Config,
-    productionCaches: CacheConfig['cacheMap'],
+  projects: any[],
+  config: Config,
+  productionCaches: CacheConfig['cacheMap'],
 ): Promise<Config> {
   let cached = true;
   let hashes = '';
@@ -129,8 +125,8 @@ async function restoreOrSaveCache(
     const prodPattern = getProjectFiles(project);
     const projectHash = getFilesHash(prodPattern);
     const hash = createHash('sha256')
-        .update(projectHash + config.hashes)
-        .digest('hex');
+      .update(projectHash + config.hashes)
+      .digest('hex');
     hashes += hash;
     const cacheKey = key + '-' + hash;
     let prodCache = false;
@@ -171,7 +167,7 @@ async function downloadCache(name: string, cacheItem: CacheItem, key: string) {
   const cachePath = `temp${Math.random()}.zip`;
 
   execSync(
-      `curl -L "${artifact.archive_download_url}" -H "Authorization: Bearer ${process.env.ACCESS_TOKEN}" --output ${cachePath}`,
+    `curl -L "${artifact.archive_download_url}" -H "Authorization: Bearer ${process.env.ACCESS_TOKEN}" --output ${cachePath}`,
   );
 
   execSync(`unzip ${cachePath}`);
@@ -186,14 +182,14 @@ async function downloadCache(name: string, cacheItem: CacheItem, key: string) {
 
 async function getArtifact(name: string): Promise<Artifact | undefined> {
   const apiResponse = await fetch(
-      `${server}/api/v3/repos/${repo}/actions/artifacts?name=${name}`,
-      {
-        headers: {
-          Accept: 'application/vnd.github+json',
-          Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
+    `${server}/api/v3/repos/${repo}/actions/artifacts?name=${name}`,
+    {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+        'X-GitHub-Api-Version': '2022-11-28',
       },
+    },
   );
   const responseJson = await apiResponse.json();
   return responseJson.artifacts[0];
@@ -223,26 +219,26 @@ async function restoreTest(projects: any[], config: Config) {
   for (const project of projects) {
     const root = project.root || '.';
     testPattern.push(
-        ...[
-          project.sourceRoot + '/*.spec.ts',
-          root + '/tsconfig.spec.json',
-          root + '/test-setup.ts',
-          root + '/jest.config.ts',
-        ],
+      ...[
+        project.sourceRoot + '/*.spec.ts',
+        root + '/tsconfig.spec.json',
+        root + '/test-setup.ts',
+        root + '/jest.config.ts',
+      ],
     );
   }
   const testHash = getFilesHash(testPattern);
   const hash = createHash('sha256')
-      .update(testHash + config.hashes)
-      .digest('hex');
+    .update(testHash + config.hashes)
+    .digest('hex');
   let testCache = false;
   const cacheKey = 'test_cov-' + hash;
 
   if (config.cached) {
     testCache = await downloadCache(
-        cacheKey,
-        { path: testCacheName },
-        'test_cov',
+      cacheKey,
+      { path: testCacheName },
+      'test_cov',
     );
   }
 
@@ -256,7 +252,7 @@ async function restoreTest(projects: any[], config: Config) {
 }
 
 function runNpmScript(script: string) {
-  const result = spawnSync('npm', ['run', script], {encoding: 'utf8'});
+  const result = spawnSync('npm', ['run', script], { encoding: 'utf8' });
   if (result.status) {
     throw new Error(result.stderr);
   }

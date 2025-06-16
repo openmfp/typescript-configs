@@ -1,4 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>openmfp/.github:renovate-config"]
+  "extends": ["local>openmfp/.github:renovate-config"],
+  "packageRules": [
+    {
+      "matchPackageNames": ["@actions/artifact"],
+      "allowedVersions": "<2.0.0"
+    }
+  ]
 }
