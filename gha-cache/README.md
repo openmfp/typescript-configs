@@ -46,3 +46,11 @@ npm i @openmfp/gha-cache -D
 ```shell
 ACCESS_TOKEN=$TOKEN_TO_GITHUB node node_modules/@openmfp/gha-cache/angular.js
 ```
+
+# testing
+if you want to test the caching locally, you need to pass GITHUB_SERVER_URL, GITHUB_REPOSITORY and ACCESS_TOKEN to it:
+
+e.g.
+```shell
+GITHUB_SERVER_URL=https://github.tools.sap GITHUB_REPOSITORY=dxp/organization-ui ACCESS_TOKEN=... node node_modules/@openmfp/gha-cache/angular.js
+```
