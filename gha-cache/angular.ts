@@ -16,6 +16,7 @@ interface CacheConfig {
 interface Artifact {
   name: string;
   archive_download_url: string;
+  expires_at: string;
 }
 
 interface Config {
@@ -161,7 +162,7 @@ function getCachePath(cacheItem: CacheItem, key: string): string {
 
 async function downloadCache(name: string, cacheItem: CacheItem, key: string) {
   const artifact = await getArtifact(name);
-  if (!artifact) {
+  if (!artifact || new Date(artifact.expires_at).getTime() < new Date().getTime()) {
     return false;
   }
   const cachePath = `temp${Math.random()}.zip`;
