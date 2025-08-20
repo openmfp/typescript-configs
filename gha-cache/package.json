@@ -10,7 +10,7 @@
     "test": "echo 'no test'"
   },
   "peerDependencies": {
-    "node-jq": "6.0.1"
+    "node-jq": "6.1.0"
   },
   "url": "https://github.com/openmfp/typescript-configs",
   "type": "commonjs",
