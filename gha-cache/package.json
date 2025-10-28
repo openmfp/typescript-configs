@@ -16,7 +16,7 @@
   "type": "commonjs",
   "devDependencies": {
     "@actions/artifact": "^1.1.2",
-    "@types/node": "^22.13.16",
+    "@types/node": "^24.0.0",
     "esbuild": "^0.25.2",
     "typescript": "^5.8.2"
   }
