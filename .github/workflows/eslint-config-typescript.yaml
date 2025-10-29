@@ -19,8 +19,9 @@ jobs:
     concurrency:
       group: ${{ github.ref }}
       cancel-in-progress: false
-    uses: openmfp/gha/.github/workflows/pipeline-node-module.yml@main
+    uses: openmfp/gha/.github/workflows/pipeline-node-module.yml@npmjs-publish
     secrets: inherit
     with:
       workingDirectory: "eslint-config-typescript"
       prefix: "eslint-config-typescript/"
+      environment: "npmjs:@openmfp/eslint-config-typescript"

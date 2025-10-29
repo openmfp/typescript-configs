@@ -2,6 +2,11 @@
   "name": "@openmfp/eslint-config-typescript",
   "version": "0.7.0",
   "description": "Repository which contains ESLint Configuration for projects that use TypeScript",
+  "repository": {
+    "url": "git+https://github.com/openmfp/typescript-configs.git"
+  },
+  "license": "Apache-2.0",
+  "author": "OpenMFP",
   "main": "index.js",
   "files": [
     "index.js",
