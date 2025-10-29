@@ -24,4 +24,4 @@ jobs:
     with:
       workingDirectory: "config-prettier"
       prefix: "config-prettier/"
-      environment: npmjs:@openmfp/config-prettier
+      environment: "npmjs:@openmfp/config-prettier"

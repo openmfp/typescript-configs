@@ -3,7 +3,7 @@
   "version": "0.8.1",
   "description": "A shared configuration for prettier to be used across openmfp frontends",
   "repository": {
-    "url": "git+https://github.com/openmfp/typescript-config.git"
+    "url": "git+https://github.com/openmfp/typescript-configs.git"
   },
   "license": "Apache-2.0",
   "author": "OpenMFP",
