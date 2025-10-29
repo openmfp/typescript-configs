@@ -19,7 +19,7 @@ jobs:
     concurrency:
       group: ${{ github.ref }}
       cancel-in-progress: false
-    uses: openmfp/gha/.github/workflows/pipeline-node-module.yml@main
+    uses: openmfp/gha/.github/workflows/pipeline-node-module.yml@npmjs-publish
     secrets: inherit
     with:
       workingDirectory: "gha-cache"
@@ -27,3 +27,4 @@ jobs:
       artifactPath: "gha-cache/dist"
       workingDirectoryDist: "gha-cache/dist"
       prefix: "gha-cache/"
+      environment: "npmjs:@openmfp/gha-cache"

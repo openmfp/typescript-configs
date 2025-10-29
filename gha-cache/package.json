@@ -2,6 +2,11 @@
   "name": "@openmfp/gha-cache",
   "version": "0.5.21",
   "description": "GitHunt Action cache scripts",
+  "repository": {
+    "url": "git+https://github.com/openmfp/typescript-configs.git"
+  },
+  "license": "Apache-2.0",
+  "author": "OpenMFP",
   "files": [
     "angular.js"
   ],
