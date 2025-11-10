@@ -1,6 +1,6 @@
 {
   "name": "@openmfp/config-prettier",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "A shared configuration for prettier to be used across openmfp frontends",
   "repository": {
     "url": "git+https://github.com/openmfp/typescript-configs.git"
