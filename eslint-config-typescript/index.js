@@ -1,7 +1,6 @@
 // @ts-check
 import pluginTs from "typescript-eslint";
 import pluginJs from "@eslint/js";
-import pluginJest from "eslint-plugin-jest";
 import pluginPrettier from "eslint-config-prettier";
 
 export default pluginTs.config(
@@ -29,13 +28,5 @@ export default pluginTs.config(
       // TODO remove when we extend strict-type-checked since it's included there
       "@typescript-eslint/no-confusing-void-expression": "error",
     },
-  },
-  {
-    // config to test files only
-    files: ["**/*.spec.ts"],
-    ...pluginJest.configs["flat/recommended"],
-    rules: {
-      ...pluginJest.configs["flat/recommended"].rules,
-    },
-  },
+  }
 );
