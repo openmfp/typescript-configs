@@ -1,6 +1,6 @@
 {
   "name": "@openmfp/gha-cache",
-  "version": "0.5.35",
+  "version": "0.5.36",
   "description": "GitHunt Action cache scripts",
   "repository": {
     "url": "git+https://github.com/openmfp/typescript-configs.git"
