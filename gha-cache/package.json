@@ -22,7 +22,7 @@
   "devDependencies": {
     "@actions/artifact": "1.1.2",
     "@types/node": "24.13.3",
-    "esbuild": "0.28.1",
+    "esbuild": "0.28.2",
     "typescript": "5.9.3"
   }
 }
