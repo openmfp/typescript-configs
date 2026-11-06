@@ -19,7 +19,7 @@ jobs:
     concurrency:
       group: ${{ github.ref }}
       cancel-in-progress: false
-    uses: openmfp/gha/.github/workflows/pipeline-node-module.yml@main
+    uses: openmfp/gha/.github/workflows/pipeline-node-module.yml@b71a2deb23348f37aa0ce4b430477edce41b8a0c # main
     secrets: inherit
     with:
       workingDirectory: "gha-cache"
