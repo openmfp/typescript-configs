@@ -20,7 +20,7 @@
   "url": "https://github.com/openmfp/typescript-configs",
   "type": "commonjs",
   "devDependencies": {
-    "@actions/artifact": "1.1.2",
+    "@actions/artifact": "1.1.3",
     "@types/node": "24.13.3",
     "esbuild": "0.28.1",
     "typescript": "5.9.3"
