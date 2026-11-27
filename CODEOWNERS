@@ -1,3 +1,6 @@
 # Default code owners
 * @openmfp/frame
 * @openmfp/ui-approvers
+
+# CI and workflow files require CI maintainer review
+/.github/ @openmfp/ci-maintainers
